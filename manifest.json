@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "NotebookLM Canvas Editor",
+  "version": "1.0.0",
+  "description": "노트북LM 이미지를 벡터화하여 개별 객체로 편집합니다.",
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": [
+    "https://lh3.googleusercontent.com/*",
+    "https://*.google.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://notebooklm.google.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "NotebookLM Canvas Editor"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  },
+  "icons": {
+    "48": "icons/icon48.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["editor.html", "lib/*"],
+      "matches": ["https://notebooklm.google.com/*"]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NotebookLM Canvas Editor</title>
+    <link rel="stylesheet" href="popup.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>NotebookLM <span>Canvas</span></h1>
+        <p class="subtitle">이미지를 벡터 객체로 변환합니다</p>
+      </header>
+
+      <main>
+        <button id="scanBtn" class="primary-btn">
+          <span class="icon">🔍</span>
+          페이지 이미지 스캔
+        </button>
+
+        <div id="status" class="status-msg"></div>
+
+        <div id="imageListContainer" class="image-list-container hidden">
+          <h3>추출된 이미지 (<span id="count">0</span>)</h3>
+          <div id="imageList" class="image-grid"></div>
+        </div>
+
+        <div id="placeholder" class="placeholder">
+          <img
+            src="icons/icon48.png"
+            alt="Logo"
+            class="placeholder-logo"
+            onerror="
+              this.src =
+                'https://img.icons8.com/parakeet/48/artificial-intelligence.png'
+            "
+          />
+          <p>노트북LM 페이지에서 스캔을 시작하세요</p>
+        </div>
+      </main>
+
+      <footer>
+        <p>© 2026 NotebookLM Canvas Editor</p>
+      </footer>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>

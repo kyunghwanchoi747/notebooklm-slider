@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Canvas Editor | NotebookLM</title>
+  <link rel="stylesheet" href="editor.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="lib/fabric.min.js"></script>
+  <script src="lib/vtracer.js"></script>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="logo">
+        <h2>Canvas <span>Editor</span></h2>
+      </div>
+      
+      <div class="tool-section">
+        <h3>기본 편집</h3>
+        <div class="btn-group">
+          <button id="deleteBtn" class="tool-btn danger" title="삭제 (Del)">
+            <span class="icon">🗑️</span> 객체 삭제
+          </button>
+          <button id="clearBtn" class="tool-btn secondary">
+            <span class="icon">🧹</span> 전체 비우기
+          </button>
+        </div>
+      </div>
+
+      <div class="tool-section">
+          <h3>내보내기</h3>
+          <button id="downloadPng" class="tool-btn primary">
+            <span class="icon">🖼️</span> PNG 다운로드
+          </button>
+          <button id="downloadSvg" class="tool-btn primary">
+            <span class="icon">📐</span> SVG 다운로드
+          </button>
+      </div>
+
+      <div class="layer-info">
+        <h3>단축키 안내</h3>
+        <ul>
+          <li><strong>Del</strong>: 선택한 객체 삭제</li>
+          <li><strong>Ctrl+Z</strong>: 실행 취소</li>
+          <li><strong>마우스 드래그</strong>: 객체 이동</li>
+          <li><strong>모서리 핸들</strong>: 크기 조절</li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="editor-container">
+      <div class="canvas-wrapper" id="canvas-parent">
+        <canvas id="canvas"></canvas>
+      </div>
+    </main>
+  </div>
+  
+  <div id="loadingOverlay" class="overlay hidden">
+    <div class="loader"></div>
+    <p id="loadingText">이미지를 벡터화하는 중...</p>
+    <p id="loadingProgress" style="font-size: 14px; color: #6b7280;"></p>
+  </div>
+
+  <script src="editor.js"></script>
+</body>
+</html>

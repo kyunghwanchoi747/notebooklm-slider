@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Icon Generator | NotebookLM Extension</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 50px; background: #f0f2f5; }
+        .canvas-container { margin: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: white; padding: 20px; border-radius: 12px; }
+        canvas { border: 1px solid #ddd; background: #fff; }
+        .controls { display: flex; gap: 10px; margin-top: 20px; }
+        button { padding: 10px 20px; cursor: pointer; background: #4f46e5; color: white; border: none; border-radius: 6px; font-weight: bold; }
+        button:hover { background: #4338ca; }
+        p { color: #666; max-width: 500px; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>NotebookLM Canvas Editor</h1>
+    <p>아래 버튼을 클릭하여 확장프로그램 아이콘을 생성하고 저장하세요.<br> 생성된 파일을 <b>icons</b> 폴더에 넣어주시면 됩니다.</p>
+    
+    <div class="canvas-container">
+        <canvas id="iconCanvas" width="128" height="128"></canvas>
+    </div>
+
+    <div class="controls">
+        <button onclick="downloadIcon(16)">16x16 저장</button>
+        <button onclick="downloadIcon(48)">48x48 저장</button>
+        <button onclick="downloadIcon(128)">128x128 저장</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('iconCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function drawIcon(size) {
+            canvas.width = size;
+            canvas.height = size;
+            const s = size;
+
+            // Background
+            const grad = ctx.createLinearGradient(0, 0, s, s);
+            grad.addColorStop(0, '#4f46e5');
+            grad.addColorStop(1, '#818cf8');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.roundRect(0, 0, s, s, s * 0.2);
+            ctx.fill();
+
+            // Stylized 'C' or Canvas Icon
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = s * 0.08;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            // Draw a simplified canvas/frame
+            const margin = s * 0.25;
+            ctx.strokeRect(margin, margin, s - margin*2, s - margin*2);
+            
+            // Draw a 'pencil' tip or vector dot
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(s * 0.7, s * 0.3, s * 0.1, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function downloadIcon(size) {
+            drawIcon(size);
+            const link = document.createElement('a');
+            link.download = `icon${size}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        // Initial preview
+        drawIcon(128);
+    </script>
+</body>
+</html>
