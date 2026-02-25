@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
-      if (!tab.url.includes('notebooklm.google.com')) {
+      if (!tab.url || !tab.url.includes('notebooklm.google.com')) {
         statusEl.textContent = '노트북LM 페이지에서 실행해주세요.';
         scanBtn.disabled = false;
         return;
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       chrome.tabs.sendMessage(tab.id, { action: 'GET_IMAGES' }, (response) => {
         if (chrome.runtime.lastError) {
-          statusEl.textContent = '페이지와 통신할 수 없습니다. 새로고침 후 시도해주세요.';
+          statusEl.textContent = '페이지 통신 오류. 새로고침 후 시도하세요.';
           console.error(chrome.runtime.lastError);
           scanBtn.disabled = false;
           return;
@@ -33,9 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (response && response.images && response.images.length > 0) {
           renderImages(response.images);
-          statusEl.textContent = `${response.images.length}개의 이미지를 찾았습니다.`;
+          const slideCount = response.images.filter(i => i.isSlide).length;
+          statusEl.textContent = slideCount > 0
+            ? `슬라이드 ${slideCount}개 발견`
+            : `이미지 ${response.images.length}개 발견`;
         } else {
-          statusEl.textContent = '추출 가능한 이미지가 없습니다.';
+          statusEl.textContent = '슬라이드 이미지를 찾지 못했습니다.';
+          placeholderEl.classList.remove('hidden');
         }
         scanBtn.disabled = false;
       });
@@ -55,33 +59,33 @@ document.addEventListener('DOMContentLoaded', () => {
     images.forEach(img => {
       const item = document.createElement('div');
       item.className = 'image-item';
+
+      const label = img.label || (img.isSlide ? '슬라이드' : '이미지');
       item.innerHTML = `
-        <img src="${img.src}" alt="Extracted Image">
+        <img src="${img.src}" alt="${label}">
         <div class="overlay">
           <div class="edit-icon">✏️</div>
         </div>
+        <div class="item-label">${label}</div>
       `;
 
-      item.addEventListener('click', () => {
-        openEditor(img);
-      });
-
+      item.addEventListener('click', () => openEditor(img));
       imageListEl.appendChild(item);
     });
   }
 
   function openEditor(imgData) {
     statusEl.textContent = '에디터를 여는 중...';
-    chrome.runtime.sendMessage({
-      action: 'OPEN_EDITOR',
-      imageData: imgData
-    }, (response) => {
-      if (chrome.runtime.lastError) {
-        statusEl.textContent = '에디터를 열 수 없습니다: ' + chrome.runtime.lastError.message;
-        console.error(chrome.runtime.lastError);
-      } else if (response && response.success) {
-        window.close(); // Close popup
+    chrome.runtime.sendMessage(
+      { action: 'OPEN_EDITOR', imageData: imgData },
+      (response) => {
+        if (chrome.runtime.lastError) {
+          statusEl.textContent = '에디터 오류: ' + chrome.runtime.lastError.message;
+          console.error(chrome.runtime.lastError);
+        } else if (response && response.success) {
+          window.close();
+        }
       }
-    });
+    );
   }
 });

@@ -4,63 +4,201 @@
   <meta charset="UTF-8">
   <title>Canvas Editor | NotebookLM</title>
   <link rel="stylesheet" href="editor.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
   <script src="lib/fabric.min.js"></script>
-  <script src="lib/vtracer.js"></script>
 </head>
 <body>
-  <div class="app-layout">
-    <aside class="sidebar">
-      <div class="logo">
-        <h2>Canvas <span>Editor</span></h2>
+  <!-- Top Toolbar -->
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <button id="backBtn" class="icon-btn" title="닫기">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      </button>
+      <span class="app-title">NotebookLM <strong>Canvas</strong></span>
+    </div>
+
+    <div class="top-bar-center">
+      <button id="undoBtn" class="icon-btn" title="실행 취소 (Ctrl+Z)" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/></svg>
+        <span>취소</span>
+      </button>
+      <button id="redoBtn" class="icon-btn" title="다시 실행 (Ctrl+Y)" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 019-9 9 9 0 016 2.3l3 2.7"/></svg>
+        <span>다시</span>
+      </button>
+    </div>
+
+    <div class="top-bar-right">
+      <button id="lockBgBtn" class="icon-btn active" title="배경 잠금">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        <span>배경 잠금</span>
+      </button>
+      <div class="separator"></div>
+      <button id="downloadPng" class="export-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        PNG
+      </button>
+      <button id="downloadSvg" class="export-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        SVG
+      </button>
+    </div>
+  </header>
+
+  <div class="workspace">
+    <!-- Left Tool Palette -->
+    <aside class="tool-palette">
+      <button class="tool-btn active" data-tool="select" title="선택 (V)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 0l16 12-7 2-3 7z"/></svg>
+        <span>선택</span>
+      </button>
+      <button class="tool-btn" data-tool="text" title="텍스트 (T)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+        <span>텍스트</span>
+      </button>
+      <button class="tool-btn" data-tool="rect" title="사각형 (R)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        <span>사각형</span>
+      </button>
+      <button class="tool-btn" data-tool="circle" title="원 (O)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+        <span>원</span>
+      </button>
+      <button class="tool-btn" data-tool="line" title="선 (L)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="19" x2="19" y2="5"/></svg>
+        <span>선</span>
+      </button>
+      <button class="tool-btn" data-tool="arrow" title="화살표 (A)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="19" x2="19" y2="5"/><polyline points="9 5 19 5 19 15"/></svg>
+        <span>화살표</span>
+      </button>
+      <div class="tool-divider"></div>
+      <button class="tool-btn" data-tool="image" title="이미지 추가">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span>이미지</span>
+      </button>
+      <input type="file" id="imageFileInput" accept="image/*" style="display:none">
+    </aside>
+
+    <!-- Canvas Area -->
+    <main class="canvas-area">
+      <div class="canvas-wrapper" id="canvas-wrapper">
+        <canvas id="canvas"></canvas>
       </div>
-      
-      <div class="tool-section">
-        <h3>기본 편집</h3>
-        <div class="btn-group">
-          <button id="deleteBtn" class="tool-btn danger" title="삭제 (Del)">
-            <span class="icon">🗑️</span> 객체 삭제
+    </main>
+
+    <!-- Right Properties Panel -->
+    <aside class="properties-panel" id="propertiesPanel">
+      <div class="panel-empty" id="panelEmpty">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <p>객체를 선택하거나<br>도구를 사용해<br>편집하세요</p>
+      </div>
+
+      <!-- Common Transform Properties -->
+      <div class="prop-group" id="propTransform" style="display:none">
+        <div class="prop-group-title">위치 / 크기</div>
+        <div class="prop-row two-col">
+          <label>X<input type="number" id="propX" step="1"></label>
+          <label>Y<input type="number" id="propY" step="1"></label>
+        </div>
+        <div class="prop-row two-col">
+          <label>W<input type="number" id="propW" step="1" min="1"></label>
+          <label>H<input type="number" id="propH" step="1" min="1"></label>
+        </div>
+        <div class="prop-row">
+          <label>회전
+            <input type="number" id="propAngle" step="1" min="-360" max="360">
+          </label>
+        </div>
+        <div class="prop-row">
+          <label>불투명도
+            <input type="range" id="propOpacity" min="0" max="100" value="100">
+            <span id="propOpacityVal">100%</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Text Properties -->
+      <div class="prop-group" id="propText" style="display:none">
+        <div class="prop-group-title">텍스트</div>
+        <div class="prop-row">
+          <label>폰트
+            <select id="propFontFamily">
+              <option value="Arial">Arial</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Verdana">Verdana</option>
+              <option value="Courier New">Courier New</option>
+              <option value="Noto Sans KR">Noto Sans KR</option>
+            </select>
+          </label>
+        </div>
+        <div class="prop-row two-col">
+          <label>크기<input type="number" id="propFontSize" min="6" max="200" step="1" value="16"></label>
+          <label>색상<input type="color" id="propTextColor" value="#000000"></label>
+        </div>
+        <div class="prop-row btn-row">
+          <button id="propBold" class="style-btn" title="굵게"><strong>B</strong></button>
+          <button id="propItalic" class="style-btn" title="기울임"><em>I</em></button>
+          <button id="propUnderline" class="style-btn" title="밑줄"><u>U</u></button>
+        </div>
+        <div class="prop-row btn-row">
+          <button id="propAlignLeft" class="style-btn" title="왼쪽 정렬">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg>
           </button>
-          <button id="clearBtn" class="tool-btn secondary">
-            <span class="icon">🧹</span> 전체 비우기
+          <button id="propAlignCenter" class="style-btn" title="가운데 정렬">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+          </button>
+          <button id="propAlignRight" class="style-btn" title="오른쪽 정렬">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="6" y1="18" x2="21" y2="18"/></svg>
           </button>
         </div>
       </div>
 
-      <div class="tool-section">
-          <h3>내보내기</h3>
-          <button id="downloadPng" class="tool-btn primary">
-            <span class="icon">🖼️</span> PNG 다운로드
-          </button>
-          <button id="downloadSvg" class="tool-btn primary">
-            <span class="icon">📐</span> SVG 다운로드
-          </button>
+      <!-- Shape Fill/Stroke Properties -->
+      <div class="prop-group" id="propShape" style="display:none">
+        <div class="prop-group-title">도형 스타일</div>
+        <div class="prop-row two-col">
+          <label>채우기<input type="color" id="propFill" value="#4F8EF7"></label>
+          <label>테두리<input type="color" id="propStroke" value="#000000"></label>
+        </div>
+        <div class="prop-row">
+          <label>테두리 두께
+            <input type="range" id="propStrokeWidth" min="0" max="20" value="0">
+            <span id="propStrokeWidthVal">0px</span>
+          </label>
+        </div>
+        <div class="prop-row">
+          <label>
+            <input type="checkbox" id="propNoFill"> 채우기 없음
+          </label>
+        </div>
       </div>
 
-      <div class="layer-info">
-        <h3>단축키 안내</h3>
-        <ul>
-          <li><strong>Del</strong>: 선택한 객체 삭제</li>
-          <li><strong>Ctrl+Z</strong>: 실행 취소</li>
-          <li><strong>마우스 드래그</strong>: 객체 이동</li>
-          <li><strong>모서리 핸들</strong>: 크기 조절</li>
-        </ul>
+      <!-- Z-Order Controls -->
+      <div class="prop-group" id="propOrder" style="display:none">
+        <div class="prop-group-title">순서</div>
+        <div class="prop-row btn-row">
+          <button id="orderFront" class="order-btn" title="맨 앞으로">맨 앞</button>
+          <button id="orderForward" class="order-btn" title="앞으로">앞</button>
+          <button id="orderBackward" class="order-btn" title="뒤로">뒤</button>
+          <button id="orderBack" class="order-btn" title="맨 뒤로">맨 뒤</button>
+        </div>
+      </div>
+
+      <!-- Delete Button -->
+      <div class="prop-group" id="propDelete" style="display:none">
+        <button id="deleteBtn" class="delete-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+          선택 삭제
+        </button>
       </div>
     </aside>
-
-    <main class="editor-container">
-      <div class="canvas-wrapper" id="canvas-parent">
-        <canvas id="canvas"></canvas>
-      </div>
-    </main>
   </div>
-  
-  <div id="loadingOverlay" class="overlay hidden">
-    <div class="loader"></div>
-    <p id="loadingText">이미지를 벡터화하는 중...</p>
-    <p id="loadingProgress" style="font-size: 14px; color: #6b7280;"></p>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="loading-spinner"></div>
+    <p id="loadingText">이미지 로드 중...</p>
   </div>
 
   <script src="editor.js"></script>

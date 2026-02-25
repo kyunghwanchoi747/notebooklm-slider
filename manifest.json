@@ -3,7 +3,7 @@
   "name": "NotebookLM Canvas Editor",
   "version": "1.0.0",
   "description": "노트북LM 이미지를 벡터화하여 개별 객체로 편집합니다.",
-  "permissions": ["activeTab", "storage"],
+  "permissions": ["activeTab", "storage", "unlimitedStorage"],
   "host_permissions": [
     "https://lh3.googleusercontent.com/*",
     "https://*.google.com/*"
